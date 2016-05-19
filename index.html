@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset=utf-8>
+		<title>iSpy ML</title>
+		<style>
+			body { margin: 0; }
+			canvas { width: 100%; height: 100% }
+			#stats {
+  			position: absolute;
+  			top:0;
+  			left: 0;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="axes"></div>
+		<script src="js/three.min.js"></script>
+		<script src="js/stats.min.js"></script>
+		<script src="js/TrackballControls.js"></script>
+		<script>
+			var w = window.innerWidth;
+			var h = window.innerHeight;
+
+			var scene = new THREE.Scene();
+			var stats = new Stats();
+			document.body.appendChild(stats.domElement);
+
+			var camera = new THREE.PerspectiveCamera(75, w/h, 0.1, 1000);
+			camera.position.x = 1.5;
+			camera.position.y = 1.5;
+			camera.position.z = 1.5;
+
+			var renderer = new THREE.WebGLRenderer({antialias:true});
+			renderer.setSize(w, h);
+			renderer.setPixelRatio(window.devicePixelRatio ? window.devicePixelRatio : 1);
+
+			document.body.appendChild(renderer.domElement);
+
+			var controls = new THREE.TrackballControls(camera, renderer.domElement);
+      controls.rotateSpeed = 3.0;
+      controls.zoomSpeed = 0.5;
+
+			var ambientLight = new THREE.AmbientLight(0x404040);
+			scene.add(ambientLight);
+
+			var directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+      directionalLight.position.set(0, 0.5, 1);
+      scene.add(directionalLight);
+
+			var axes = new THREE.AxisHelper(2);
+			scene.add(axes);
+
+			var nx = 10;
+			var ny = 10;
+			var nz = 30;
+
+			var cx = 0.10;
+			var cy = 0.10;
+			var cz = 0.10;
+
+			var geometry = new THREE.BoxGeometry(cx,cy,cz);
+			var detector_material = new THREE.MeshBasicMaterial({
+													color: 0xcccccc,
+													transparent:true,
+													opacity: 0.1});
+
+			var hit_material = new THREE.MeshBasicMaterial({color: 0xff0000, transparent:true, opacity:1.0});
+
+			for ( var i = 0; i < nx; i++ ) {
+				for ( var j = 0; j < ny; j++ ) {
+					for ( var k = 0; k < nz; k++ ) {
+
+						var material;
+
+						if ( Math.random() < 0.1 ) {
+							material = hit_material;
+						} else {
+							material = detector_material;
+						}
+
+						var box = new THREE.Mesh(geometry, material);
+
+						box.position.x = (i + 0.5)*cx - nx*0.1*0.5;
+						box.position.y = (j + 0.5)*cy - ny*0.1*0.5;
+						box.position.z = (k+0.5)*cz - nz*0.1*0.5;
+
+						scene.add(box);
+					}
+				}
+			}
+
+			var render = function () {
+				requestAnimationFrame(render);
+				renderer.render(scene, camera);
+
+				controls.update();
+				stats.update();
+			};
+
+			render();
+		</script>
+	</body>
+</html>
