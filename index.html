@@ -120,7 +120,7 @@
 								var z = (k + 0.5)*cz;
 
 								var color = new THREE.Color(i/nx,j/ny,k/nz);
-								var box = new THREE.Mesh(new THREE.BoxGeometry(s*cx,s*cy,s*cz), new THREE.MeshBasicMaterial({color:color, transparent:true, opacity:o}));
+								var box = new THREE.Mesh(new THREE.BoxGeometry(s*cx,s*cy,s*cz), new THREE.MeshPhongMaterial({color:color, transparent:true, opacity:o}));
 
 								box.position.x = x;
 								box.position.y = y;
